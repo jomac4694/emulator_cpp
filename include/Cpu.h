@@ -9,8 +9,12 @@ namespace emulator
 typedef unsigned char byte;
 const int16_t MEM_SIZE = 4096;
 const int16_t ROM_OFFSET_START = 0x200;
-static constexpr byte DISPLAY_WIDTH = 64;
-static constexpr byte DISPLAY_HEIGHT = 32;
+static const byte DISPLAY_WIDTH = 64;
+static const byte DISPLAY_HEIGHT = 32;
+typedef std::array<byte, MEM_SIZE> RAM;
+typedef std::stack<unsigned short> ProgramStack;
+typedef std::array<byte, 16> Registers;
+typedef std::array<std::array<bool, DISPLAY_WIDTH>, DISPLAY_HEIGHT> PixelBuffer;
 
     struct Instruction
     {
@@ -39,26 +43,23 @@ struct Memory
 {
     Memory()
     {
-        mBuffer.reserve(MEM_SIZE);
+
     }
-    std::vector<byte> mBuffer;
+    RAM mBuffer = {};
     byte ReadByte(uint16_t& address);
     uint16_t ReadNextInstruction(uint16_t& address);
     void WriteByte(uint16_t address, byte val);
 };
 
 
-typedef std::array<byte, MEM_SIZE> RAM;
-typedef std::stack<unsigned short> ProgramStack;
-typedef std::array<byte, 16> Registers;
-typedef std::array<std::array<bool, DISPLAY_HEIGHT>, DISPLAY_WIDTH> PixelBuffer; 
+ 
 
 class Cpu
 {
 
 public:
     Cpu();
-    void Fetch();
+    Instruction Fetch();
     void Decode(Instruction);
     void Execute();
     void Draw(Instruction);
@@ -67,7 +68,7 @@ public:
     Registers mRegisters;
     ProgramStack mStack;
     Memory mMemoryBuffer;
-    PixelBuffer mPixelBuffer;
+    PixelBuffer mPixelBuffer = {};
 };
 
 }

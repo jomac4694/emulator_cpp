@@ -6,7 +6,7 @@ project(
     VERSION 0.0.1
     DESCRIPTION "Likely a shitty implmentation of the chip8"
     LANGUAGES CXX)
-
+set(CMAKE_OSX_ARCHITECTURES "arm64")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
