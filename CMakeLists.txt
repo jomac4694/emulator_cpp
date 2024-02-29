@@ -19,11 +19,17 @@ FetchContent_MakeAvailable(SFML)
 
 set(HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/include/")
 set(SOURCES 
-    src/main.cpp 
+    src/Cpu.cpp
 )
 
+####### library ########
+add_library(Chip8Emulator_lib STATIC ${SOURCES})
+target_include_directories(Chip8Emulator_lib PUBLIC ${HEADERS})
+####### executable ########
 include_directories(${HEADERS})
-add_executable(Chip8Emulator ${SOURCES})
+add_executable(Chip8Emulator "src/main.cpp")
 #target_include_directories(MacroRecorder PUBLIC ${HEADERS}) is this even needed?
-target_link_libraries(Chip8Emulator PRIVATE sfml-graphics)
+target_link_libraries(Chip8Emulator PRIVATE sfml-graphics Chip8Emulator_lib)
 target_compile_features(Chip8Emulator PRIVATE cxx_std_20)
+
+add_subdirectory(tests)

@@ -1,0 +1,2 @@
+add_executable(emu_tests testmain.cpp)
+target_link_libraries(emu_tests PUBLIC Chip8Emulator_lib)
