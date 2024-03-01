@@ -22,11 +22,11 @@ void PrintPixels(Cpu& cpu)
         {
             if (cpu.mPixelBuffer[i][j])
             {
-                std::cout << "1 ";
+                std::cout << "> ";
             }
             else
             {
-                std::cout << "0 ";
+                std::cout << "# ";
             }
         }
         std::cout << std::endl;
@@ -35,7 +35,7 @@ void PrintPixels(Cpu& cpu)
 int main()
 {
 
-    std::vector<char> rom_buffer = LoadRom("/Users/josephmcilvaine/emulator_cpp/src/roms/IBM_Logo.ch8");
+    std::vector<char> rom_buffer = LoadRom("C:\\Users\\Joe Mcilvaine\\Documents\\emulator_cpp\\src\\roms\\test_opcode.ch8");
     std::cout << "size=" << rom_buffer.size() << std::endl;
 
     Cpu cpu;

@@ -65,7 +65,7 @@ public:
     void Draw(Instruction);
     unsigned short mProgramCounter;
     unsigned short mIndexRegister;
-    Registers mRegisters;
+    Registers mRegisters = {};
     ProgramStack mStack;
     Memory mMemoryBuffer;
     PixelBuffer mPixelBuffer = {};

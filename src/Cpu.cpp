@@ -120,7 +120,62 @@ namespace emulator
                 PrintInstruction(instruct);
                 Draw(instruct);
                 break;
-            
+            case 0x8:
+                switch (instruct.N)
+                {
+                    case 0x0:
+                        mRegisters[instruct.X] = mRegisters[instruct.Y];
+                        break;
+                    case 0x1:
+                        mRegisters[instruct.X] = mRegisters[instruct.X] | mRegisters[instruct.Y];
+                        break;
+                    case 0x2:
+                        mRegisters[instruct.X] = mRegisters[instruct.X] & mRegisters[instruct.Y];
+                        break;
+                    case 0x3:
+                        mRegisters[instruct.X] = mRegisters[instruct.X] ^ mRegisters[instruct.Y];
+                        break;
+                    case 0x4:
+                    {
+                        int val = mRegisters[instruct.X] + mRegisters[instruct.Y];
+                        if (val > 255)
+                            mRegisters[0xF] = 0x1;
+                        else
+                            mRegisters[0xF] = 0x0;
+                        mRegisters[instruct.X] = mRegisters[instruct.X] + mRegisters[instruct.Y];
+                        break;
+                    }
+                    case 0x5:
+                        std::cout << "Executing instruction 0x8XY5" << std::endl;
+                        mRegisters[instruct.X] = mRegisters[instruct.X] - mRegisters[instruct.Y];
+                        if (mRegisters[instruct.X] > mRegisters[instruct.Y])
+                            mRegisters[0xF] = 0x1;
+                        else
+                            mRegisters[0xF] = 0x0;
+                        break;
+                    case 0x7:
+                        if (mRegisters[instruct.Y] > mRegisters[instruct.X])
+                            mRegisters[0xF] = 1;
+                        else
+                            mRegisters[0xF] = 0;
+                        mRegisters[instruct.X] = mRegisters[instruct.Y] - mRegisters[instruct.X];
+                        break;
+
+                }
+                break;
+            case 0xF:
+                switch (instruct.NN)
+                {
+                    case 0x55:
+                        uint16_t start = mIndexRegister;
+                        for (int i = 0; i <= instruct.X; i++)
+                        {
+                            mMemoryBuffer.WriteByte(start + i, mRegisters[i]);
+                        } 
+                        break;
+
+                }
+                break;
         }
     }
 
@@ -137,36 +192,38 @@ namespace emulator
         std::vector<byte> sprite_buffer;
         std::cout << "to_draw=" << pixels_to_draw << std::endl;
         for (int i = 0; i < pixels_to_draw; i++)
-        {
+        {   
             sprite_buffer.push_back(mMemoryBuffer.ReadByte(start_offset));
         }
 
-        for (auto& sprite : sprite_buffer)
+        for (byte sprite : sprite_buffer)
         {
-            std::cout << "sprite=" << (int) sprite << std::endl; 
+            //std::cout << "sprite=" << (int) sprite << std::endl; 
+            int tmp_x = draw_x;
             for (int i = 7; i >= 0; i--)
             {
                 bool bit = sprite >> i & 0x1;
-
+                std::cout << bit << " ";
                 if (bit)
-                    std::cout << "GOT IT" << std::endl;
-                if (draw_x > DISPLAY_WIDTH)
+                    //std::cout << "GOT IT" << std::endl;
+                if (tmp_x >= DISPLAY_WIDTH)
                     break;
-                if (bit && mPixelBuffer[draw_y][draw_x])
+                if (bit && mPixelBuffer[draw_y][tmp_x])
                 {
-                    std::cout << "Disabling pixel at " << draw_x << ", " << draw_y << std::endl;
-                    mPixelBuffer[draw_y][draw_x] = false;
+                 //   std::cout << "Disabling pixel at " << draw_x << ", " << draw_y << std::endl;
+                    mPixelBuffer[draw_y][tmp_x] = false;
                     mRegisters[0xF] = 0x1;
                 }
-                else if (bit && !mPixelBuffer[draw_y][draw_x])
+                else if (bit && !mPixelBuffer[draw_y][tmp_x])
                 {
-                    std::cout << "Enabling pixel at " << draw_x << ", " << draw_y << std::endl;
-                    mPixelBuffer[draw_y][draw_x] = true;
+                    std::cout << "Enabling pixel at " << tmp_x << ", " << draw_y << std::endl;
+                    mPixelBuffer[draw_y][tmp_x] = true;
                 }
-                draw_x++;
+                tmp_x = (tmp_x + 1) % DISPLAY_WIDTH;
                 std::cout << "draw_x=" << draw_x << std::endl;
             }
             draw_y++;
+            std::cout << std::endl;
             std::cout << "draw_y=" << draw_y << std::endl;
         }
     }
