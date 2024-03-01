@@ -2,6 +2,7 @@
 #include <stack>
 #include <array>
 #include <cstdint>
+#include <chrono>
 
 namespace emulator
 {
@@ -9,12 +10,36 @@ namespace emulator
 typedef unsigned char byte;
 const int16_t MEM_SIZE = 4096;
 const int16_t ROM_OFFSET_START = 0x200;
-static const byte DISPLAY_WIDTH = 64;
-static const byte DISPLAY_HEIGHT = 32;
+
+const byte DISPLAY_SCALE = 1;
+static const byte DISPLAY_WIDTH = 64 * DISPLAY_SCALE;
+static const byte DISPLAY_HEIGHT = 32 * DISPLAY_SCALE;
 typedef std::array<byte, MEM_SIZE> RAM;
 typedef std::stack<unsigned short> ProgramStack;
 typedef std::array<byte, 16> Registers;
-typedef std::array<std::array<bool, DISPLAY_WIDTH>, DISPLAY_HEIGHT> PixelBuffer;
+typedef std::array<std::array<bool, DISPLAY_WIDTH * DISPLAY_SCALE>, DISPLAY_HEIGHT * DISPLAY_SCALE> PixelBuffer;
+const byte TIMER_SPEED = 60;
+const uint16_t TICK_DELAY = 1000 / TIMER_SPEED;
+
+
+static std::vector<byte> FONT_BUFFER{
+    0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
+    0x20, 0x60, 0x20, 0x20, 0x70, // 1
+    0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
+    0xF0, 0x10, 0xF0, 0x10, 0xF0, // 3
+    0x90, 0x90, 0xF0, 0x10, 0x10, // 4
+    0xF0, 0x80, 0xF0, 0x10, 0xF0, // 5
+    0xF0, 0x80, 0xF0, 0x90, 0xF0, // 6
+    0xF0, 0x10, 0x20, 0x40, 0x40, // 7
+    0xF0, 0x90, 0xF0, 0x90, 0xF0, // 8
+    0xF0, 0x90, 0xF0, 0x10, 0xF0, // 9
+    0xF0, 0x90, 0xF0, 0x90, 0x90, // A
+    0xE0, 0x90, 0xE0, 0x90, 0xE0, // B
+    0xF0, 0x80, 0x80, 0x80, 0xF0, // C
+    0xE0, 0x90, 0x90, 0x90, 0xE0, // D
+    0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
+    0xF0, 0x80, 0xF0, 0x80, 0x80  // F
+};
 
     struct Instruction
     {
@@ -69,6 +94,10 @@ public:
     ProgramStack mStack;
     Memory mMemoryBuffer;
     PixelBuffer mPixelBuffer = {};
+    byte mSoundTimer;
+    byte mDelayTimer;
+    uint64_t mNextTick;
+    int32_t mTickCount{-1};
 };
 
 }

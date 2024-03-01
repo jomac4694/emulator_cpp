@@ -22,11 +22,11 @@ void PrintPixels(Cpu& cpu)
         {
             if (cpu.mPixelBuffer[i][j])
             {
-                std::cout << "> ";
+                std::cout << "@ ";
             }
             else
             {
-                std::cout << "# ";
+                std::cout << ". ";
             }
         }
         std::cout << std::endl;
@@ -34,8 +34,8 @@ void PrintPixels(Cpu& cpu)
 }
 int main()
 {
-
-    std::vector<char> rom_buffer = LoadRom("C:\\Users\\Joe Mcilvaine\\Documents\\emulator_cpp\\src\\roms\\test_opcode.ch8");
+    // C:\\Users\\Joe Mcilvaine\\Documents\\emulator_cpp\\src\\roms\\test_opcode.ch8
+    std::vector<char> rom_buffer = LoadRom("/Users/josephmcilvaine/emulator_cpp/src/roms/IBM_logo.ch8");
     std::cout << "size=" << rom_buffer.size() << std::endl;
 
     Cpu cpu;
@@ -46,15 +46,16 @@ int main()
     std::cout << "size2=" << cpu.mMemoryBuffer.mBuffer.size() << std::endl;
     //for (int i = 0; i < cpu.mMemoryBuffer.mBuffer.size(); i++)
     //    std::cout << "yo=" << i << cpu.mMemoryBuffer.mBuffer[i] << std::endl;
-    auto window = sf::RenderWindow{ { emulator::DISPLAY_WIDTH, emulator::DISPLAY_HEIGHT }, "CMake SFML Project" };
-    window.setFramerateLimit(60);
+    auto window = sf::RenderWindow{ { emulator::DISPLAY_WIDTH, emulator::DISPLAY_HEIGHT}, "CMake SFML Project" };
+    window.setFramerateLimit(120);
     sf::Sprite sprite;
     sprite.setTextureRect(sf::IntRect(5,5,5,5));
     sprite.setColor(sf::Color(0, 255, 0)); // green
     sprite.setPosition(sf::Vector2f(20, 50));
 
 
-
+    //while (cpu.mTickCount < 600)
+   //     cpu.Decode(cpu.Fetch());
 
     while (window.isOpen())
     {
@@ -73,7 +74,7 @@ int main()
         {
             for (int j = 0; j < DISPLAY_WIDTH; j++)
             {
-                    sf::CircleShape shape(1);
+                    sf::CircleShape shape(1 * DISPLAY_SCALE);
                     if (cpu.mPixelBuffer[i][j])
                     {
                         
@@ -91,4 +92,5 @@ int main()
         
         window.display();
     }
+    
 }

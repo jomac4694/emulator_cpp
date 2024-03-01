@@ -6,6 +6,9 @@ project(
     VERSION 0.0.1
     DESCRIPTION "Likely a shitty implmentation of the chip8"
     LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_OSX_ARCHITECTURES "arm64")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
@@ -30,7 +33,7 @@ include_directories(${HEADERS})
 add_executable(Chip8Emulator "src/main.cpp")
 #target_include_directories(MacroRecorder PUBLIC ${HEADERS}) is this even needed?
 target_link_libraries(Chip8Emulator PRIVATE sfml-graphics Chip8Emulator_lib)
-target_compile_features(Chip8Emulator PRIVATE cxx_std_20)
+target_compile_features(Chip8Emulator PRIVATE cxx_std_17)
 
 if(WIN32)
     add_custom_command(

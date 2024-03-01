@@ -41,14 +41,14 @@ void TestCpuClearScreen00E0()
     emulator::Cpu cpu;
 
     // set all pixels on
-    for (int i = 0; i < emulator::DISPLAY_WIDTH; i++)
-        for (int j = 0; j < emulator::DISPLAY_HEIGHT; j++)
+    for (int i = 0; i < emulator::DISPLAY_HEIGHT; i++)
+        for (int j = 0; j < emulator::DISPLAY_WIDTH; j++)
             cpu.mPixelBuffer[i][j] = true;
     
     emulator::Instruction ins(0x00E0);
     cpu.Decode(ins);
-    for (int i = 0; i < emulator::DISPLAY_WIDTH; i++)
-        for (int j = 0; j < emulator::DISPLAY_HEIGHT; j++)
+    for (int i = 0; i < emulator::DISPLAY_HEIGHT; i++)
+        for (int j = 0; j < emulator::DISPLAY_WIDTH; j++)
             assert(cpu.mPixelBuffer[i][j] == false);
 }
 
